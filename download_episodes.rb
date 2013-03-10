@@ -124,7 +124,7 @@ episode_urls.each do |type,urls|
 
       end
       url   = nil
-      next if (LimitPages - limiter == 0)
+      next if (LimitPages - limiter == 0) # Exit if limiter == LimitPages
       limiter +=1
       p     = page.css(".pagination > a[@rel='next']")
       p.each do |link|
