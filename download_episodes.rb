@@ -3,6 +3,8 @@ require 'net/https'
 require 'rubygems'
 require 'nokogiri'
 
+download_all = ARGV.length > 0 && ARGV[0] == "all"
+
 begin
   require_relative 'subscription_code' #code = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 rescue
@@ -13,7 +15,6 @@ end
 subscription_code = SubscriptionCode::CODE
 CookieString      = "token="+SubscriptionCode::COOKIE
 
-LimitPages = 0 # 0 will ignore this config
 # Get all episode names
 
 # traverse through each
@@ -80,7 +81,6 @@ asciiimages  = "#{asciicasts}/images"
 
 episode_urls.each do |type,urls|
   urls.each do |url|
-    limiter = ARGV[0].to_i || 1
     until url.nil? == true
       p     = pageopen(url)
 
@@ -124,8 +124,7 @@ episode_urls.each do |type,urls|
 
       end
       url   = nil
-      next if (LimitPages - limiter == 0) # Exit if limiter == LimitPages
-      limiter +=1
+      break unless download_all
       p     = page.css(".pagination > a[@rel='next']")
       p.each do |link|
         url = base_url+link["href"]
